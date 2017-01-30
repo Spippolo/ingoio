@@ -1,10 +1,31 @@
 package main
 
+import (
+	sdl_image "github.com/veandco/go-sdl2/sdl_image"
+	"path/filepath"
+)
+
 // Scene has all Scene objects
-type Scene struct{}
+type Scene struct {
+	cam *Camera
+}
+
+func (s *Scene) drawFrame() {
+	s.cam.draw()
+}
 
 func newScene() *Scene {
 	s := new(Scene)
+	sur, err := sdl_image.Load(filepath.Join(mediaPath, "imgs/background.png"))
+	checkErr(err)
+
+	s.cam = &Camera{}
+
+	s.cam.tex, err = renderer.CreateTextureFromSurface(sur)
+	checkErr(err)
+	sur.Free()
+	s.cam.speed = 10
+	s.cam.backgroundWidth = 2000
 
 	return s
 }

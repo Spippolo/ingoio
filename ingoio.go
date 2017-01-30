@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/veandco/go-sdl2/sdl"
 	sdl_ttf "github.com/veandco/go-sdl2/sdl_ttf"
+	"os"
 )
 
 func checkErr(e error) {
@@ -16,7 +17,16 @@ var (
 	renderer     *sdl.Renderer
 	windowHeight = 600
 	windowWidth  = 800
+	scene        *Scene
+	mediaPath    string
 )
+
+func init() {
+	mediaPath = os.Getenv("INGOIO_MEDIA")
+	if mediaPath == "" {
+		mediaPath = "./res/"
+	}
+}
 
 func main() {
 	err := sdl.Init(sdl.INIT_EVERYTHING)
@@ -33,7 +43,15 @@ func main() {
 	window.SetTitle("InGOio")
 	drawTitle("InGO io")
 	sdl.Delay(3000)
-	// scene := newScene()
+	scene = newScene()
+
+	go func(fps uint32) {
+		for {
+			scene.drawFrame()
+			renderer.Present()
+			sdl.Delay(1000 / fps)
+		}
+	}(30)
 
 	running := true
 	for running {
