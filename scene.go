@@ -1,8 +1,9 @@
 package main
 
 import (
-	sdl_image "github.com/veandco/go-sdl2/sdl_image"
 	"path/filepath"
+
+	sdl_image "github.com/veandco/go-sdl2/sdl_image"
 )
 
 // Scene has all Scene objects
@@ -25,7 +26,7 @@ func newScene() *Scene {
 	checkErr(err)
 	sur.Free()
 	s.cam.speed = 10
-	s.cam.backgroundWidth = 2000
+	s.cam.backgroundWidth = 2400
 
 	return s
 }
