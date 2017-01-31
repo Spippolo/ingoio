@@ -11,11 +11,13 @@ type Camera struct {
 }
 
 func (c *Camera) draw() {
-	if c.cX+int32(windowWidth) >= c.backgroundWidth {
-		c.cX = 0
-	} else {
-		c.cX += c.speed
-	}
-
 	renderer.Copy(c.tex, &sdl.Rect{X: c.cX, W: int32(windowWidth), H: int32(windowHeight)}, nil)
+}
+
+func (c *Camera) tick(elapsed int32) {
+	c.cX += c.speed * elapsed
+
+	if c.cX+int32(windowWidth) >= c.backgroundWidth {
+		c.cX = c.backgroundWidth - (c.cX + int32(windowWidth))
+	}
 }

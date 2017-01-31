@@ -1,9 +1,12 @@
 package main
 
 import (
+	"os"
+
+	"fmt"
+
 	"github.com/veandco/go-sdl2/sdl"
 	sdl_ttf "github.com/veandco/go-sdl2/sdl_ttf"
-	"os"
 )
 
 func checkErr(e error) {
@@ -19,6 +22,7 @@ var (
 	windowWidth  = 800
 	scene        *Scene
 	mediaPath    string
+	freq         uint64
 )
 
 func init() {
@@ -34,22 +38,35 @@ func main() {
 	err = sdl_ttf.Init()
 	checkErr(err)
 
-	window, renderer, err = sdl.CreateWindowAndRenderer(
-		windowWidth, windowHeight, sdl.WINDOW_SHOWN)
-
+	window, err = sdl.CreateWindow("InGOio", 0, 0, windowWidth, windowHeight, sdl.WINDOW_OPENGL)
 	checkErr(err)
+	glContext, _ := sdl.GL_CreateContext(window)
+	defer sdl.GL_DeleteContext(glContext)
+	sdl.GL_SetSwapInterval(1)
+	renderer, err = sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED|sdl.RENDERER_PRESENTVSYNC)
+	checkErr(err)
+
 	defer window.Destroy()
 
-	window.SetTitle("InGOio")
 	drawTitle("InGO io")
-	sdl.Delay(3000)
+	sdl.Delay(2000)
 	scene = newScene()
-
+	// freq = sdl.GetPerformanceFrequency()
+	prevTime := sdl.GetTicks()
+	var tmpTime uint32
 	go func(fps uint32) {
 		for {
+			tmpTime = prevTime
+			// prevTime = sdl.GetPerformanceCounter()
+			prevTime = sdl.GetTicks()
+			fmt.Println(tmpTime)
+			fmt.Println(prevTime)
+			delta := (prevTime - tmpTime)
+			// fmt.Println(delta)
+			fmt.Println("")
+			scene.calculateFrame(int32(delta))
 			scene.drawFrame()
 			renderer.Present()
-			sdl.Delay(1000 / fps)
 		}
 	}(30)
 
@@ -67,9 +84,4 @@ func main() {
 	}
 
 	sdl.Quit()
-	// for {
-	// 	handleEvents()
-	// 	updateStates()
-	// 	display()
-	// }
 }

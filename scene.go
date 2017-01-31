@@ -11,6 +11,10 @@ type Scene struct {
 	cam *Camera
 }
 
+func (s *Scene) calculateFrame(elapsed int32) {
+	s.cam.tick(elapsed)
+}
+
 func (s *Scene) drawFrame() {
 	s.cam.draw()
 }
