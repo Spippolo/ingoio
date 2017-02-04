@@ -34,9 +34,11 @@ func main() {
 	err = sdl_ttf.Init()
 	checkErr(err)
 
-	window, renderer, err = sdl.CreateWindowAndRenderer(
-		windowWidth, windowHeight, sdl.WINDOW_SHOWN)
-
+	window, err = sdl.CreateWindow("InGOio",
+		0, 0, windowWidth, windowHeight, sdl.WINDOW_SHOWN)
+	checkErr(err)
+	renderer, err = sdl.CreateRenderer(window, -1,
+		sdl.RENDERER_ACCELERATED|sdl.RENDERER_PRESENTVSYNC)
 	checkErr(err)
 	defer window.Destroy()
 
